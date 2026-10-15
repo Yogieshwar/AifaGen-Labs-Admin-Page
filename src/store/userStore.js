@@ -143,11 +143,50 @@ export function saveUsers(users) {
   window.localStorage.setItem(USERS_KEY, JSON.stringify(users))
 }
 
+// export function loadAuditLog() {
+//   console.log(`--- 🔍 Checking Log Key: "${AUDIT_LOG_KEY}" ---`);
+//    const savedValue = window.localStorage.getItem(AUDIT_LOG_KEY);
+//     console.log("Raw value sitting in LocalStorage:", savedValue);
+//   return loadValue(AUDIT_LOG_KEY,defaultAuditLogs)
+// }
+
 export function loadAuditLog() {
-  console.log(`--- 🔍 Checking Log Key: "${AUDIT_LOG_KEY}" ---`);
-   const savedValue = window.localStorage.getItem(AUDIT_LOG_KEY);
-    console.log("Raw value sitting in LocalStorage:", savedValue);
-  return loadValue(AUDIT_LOG_KEY,defaultAuditLogs)
+  try {
+    const savedValue = window.localStorage.getItem(AUDIT_LOG_KEY)
+
+    // First visit: load the default audit logs.
+    if (savedValue === null) {
+      return defaultAuditLogs
+    }
+
+    const parsed = JSON.parse(savedValue)
+
+    // Recover if the saved data is invalid or not an array.
+    if (!Array.isArray(parsed)) {
+      return defaultAuditLogs
+    }
+
+    // Merge default logs with saved logs without duplicating IDs.
+    const logsById = new Map(
+      defaultAuditLogs.map((entry) => [entry.id, entry])
+    )
+
+    parsed.forEach((entry) => {
+      if (entry?.id) {
+        logsById.set(entry.id, entry)
+      }
+    })
+
+    // Display the newest events first.
+    return [...logsById.values()].sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() -
+        new Date(a.createdAt).getTime()
+    )
+  } catch (error) {
+    console.error('Failed to load audit logs:', error)
+    return defaultAuditLogs
+  }
 }
 
 export function saveAuditLog(entries) {

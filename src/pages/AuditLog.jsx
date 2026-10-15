@@ -366,21 +366,24 @@ function AuditLog({ entries = [], isDark }) {
   const [limit, setLimit] = useState(PAGE_SIZE)
   const [selectedEntry, setSelectedEntry] = useState(null)
 
+  // console.log('[AuditLog] Received entries:', entries.length);
+  // console.log('[AuditLog] First entry:', entries[0]);
+
   const t = isDark
     ? {
-        panel: 'border-[#263249] bg-[#10192d]', sub: 'bg-[#121e33]', line: 'border-[#263249]', divide: 'divide-[#263249]',
-        hover: 'hover:bg-[#121e33]', text: 'text-slate-100', muted: 'text-[#91a9c9]', head: 'text-white',
-        chipOn: 'border-sky-400 bg-sky-400 text-slate-900', chipOff: 'border-[#34445e] bg-transparent text-slate-200',
-        chipHover: 'hover:bg-[#18243a]', bar: 'bg-[#34445e]', barOn: 'bg-sky-400', flag: 'bg-rose-400/15 text-rose-300',
-        input: 'border-[#34445e] bg-[#10192d] text-slate-100 placeholder:text-[#91a9c9] focus:border-[#53657d] focus:ring-[#53657d]',
-      }
+      panel: 'border-[#263249] bg-[#10192d]', sub: 'bg-[#121e33]', line: 'border-[#263249]', divide: 'divide-[#263249]',
+      hover: 'hover:bg-[#121e33]', text: 'text-slate-100', muted: 'text-[#91a9c9]', head: 'text-white',
+      chipOn: 'border-sky-400 bg-sky-400 text-slate-900', chipOff: 'border-[#34445e] bg-transparent text-slate-200',
+      chipHover: 'hover:bg-[#18243a]', bar: 'bg-[#34445e]', barOn: 'bg-sky-400', flag: 'bg-rose-400/15 text-rose-300',
+      input: 'border-[#34445e] bg-[#10192d] text-slate-100 placeholder:text-[#91a9c9] focus:border-[#53657d] focus:ring-[#53657d]',
+    }
     : {
-        panel: 'border-slate-200 bg-white', sub: 'bg-slate-50', line: 'border-slate-200', divide: 'divide-slate-100',
-        hover: 'hover:bg-slate-50', text: 'text-slate-900', muted: 'text-slate-500', head: 'text-[#111827]',
-        chipOn: 'border-[#172033] bg-[#172033] text-white', chipOff: 'border-slate-200 bg-transparent text-slate-700',
-        chipHover: 'hover:bg-slate-50', bar: 'bg-slate-200', barOn: 'bg-[#172033]', flag: 'bg-rose-50 text-rose-700',
-        input: 'border-slate-200 bg-white text-slate-800 focus:border-slate-400 focus:ring-slate-200',
-      }
+      panel: 'border-slate-200 bg-white', sub: 'bg-slate-50', line: 'border-slate-200', divide: 'divide-slate-100',
+      hover: 'hover:bg-slate-50', text: 'text-slate-900', muted: 'text-slate-500', head: 'text-[#111827]',
+      chipOn: 'border-[#172033] bg-[#172033] text-white', chipOff: 'border-slate-200 bg-transparent text-slate-700',
+      chipHover: 'hover:bg-slate-50', bar: 'bg-slate-200', barOn: 'bg-[#172033]', flag: 'bg-rose-50 text-rose-700',
+      input: 'border-slate-200 bg-white text-slate-800 focus:border-slate-400 focus:ring-slate-200',
+    }
 
   const items = useMemo(
     () =>
