@@ -27,6 +27,7 @@ import { adminPages } from './adminPages.js'
 import AuditLog from './AuditLog.jsx'
 import Settings from './Settings.jsx'
 import Users from './Users.jsx'
+import AifaAssistant from './AifaAssistant.jsx'
 
 const SignupChart = lazy(() => import('./SignupChart.jsx'))
 const PlanSplitChart = lazy(() => import('./PlanSplitChart.jsx'))
@@ -947,6 +948,7 @@ function Dashboard() {
           )}
         </main>
       </div>
+      <AifaAssistant isDark={isDark} />
     </div>
   )
 }
