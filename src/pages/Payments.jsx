@@ -21,7 +21,124 @@ import {
 import { upcomingRenewals } from '../store/Data.js'
 
 import RevenueTrendCard from './RevenueTrendCard.jsx'
+const paymentIcons = {
+  upi: (
+    <>
+      <path d="M4 5h16v14H4z" />
+      <path d="M8 9h8M8 12h5M8 15h8" />
+    </>
+  ),
+  cash: (
+    <>
+      <rect x="3" y="6" width="18" height="12" rx="2" />
+      <circle cx="12" cy="12" r="3" />
+      <path d="M6 9h.01M18 15h.01" />
+    </>
+  ),
+  bank: (
+    <>
+      <path d="m3 9 9-5 9 5H3Z" />
+      <path d="M5 10v7M9 10v7M15 10v7M19 10v7M3 20h18M4 17h16" />
+    </>
+  ),
+  wallet: (
+    <>
+      <rect x="3" y="6" width="18" height="14" rx="2" />
+      <path d="M3 9h18M16 14h.01" />
+    </>
+  ),
+  rupay: (
+    <>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="M7 9h6a2 2 0 0 1 0 4H7m4 0 4 2" />
+    </>
+  ),
 
+  visa: (
+    <>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="m9 15 2-6m2 6 2-6m-1 4h3" />
+    </>
+  ),
+
+  mastercard: (
+    <>
+      <circle cx="9" cy="12" r="5" />
+      <circle cx="15" cy="12" r="5" />
+    </>
+  ),
+
+  amex: (
+    <>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="M7 15l2-6 2 6m-3-2h3m3-4v6h4m-4-3h3" />
+    </>
+  ),
+
+  card: (
+    <>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="M3 10h18" />
+    </>
+  ),
+}
+const paymentMethodStyles = {
+  upi: {
+    color: '#8B5CF6',
+    background: 'rgba(139, 92, 246, 0.12)',
+  },
+  rupay: {
+    color: '#F97316',
+    background: 'rgba(249, 115, 22, 0.12)',
+  },
+  visa: {
+    color: '#3B82F6',
+    background: 'rgba(59, 130, 246, 0.12)',
+  },
+  mastercard: {
+    color: '#F04438',
+    background: 'rgba(240, 68, 56, 0.12)',
+  },
+  amex: {
+    color: '#06B6D4',
+    background: 'rgba(6, 182, 212, 0.12)',
+  },
+  card: {
+    color: '#94A3B8',
+    background: 'rgba(148, 163, 184, 0.12)',
+  },
+}
+
+function PayIcon({ name }) {
+  const icon = paymentIcons[name] || paymentIcons.card
+
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-4 shrink-0"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.8"
+      viewBox="0 0 24 24"
+    >
+      {icon}
+    </svg>
+  )
+}
+
+function getPaymentIcon(method = '') {
+  const value = String(method).toLowerCase().trim()
+
+  if (value.includes('upi')) return 'upi'
+  if (value.includes('rupay')) return 'rupay'
+  if (value.includes('visa')) return 'visa'
+  if (value.includes('mastercard')) return 'mastercard'
+  if (value.includes('amex')) return 'amex'
+
+  return 'card'
+}
 
 
 const pageSize = 15
@@ -134,6 +251,42 @@ function Icon({ name, className = 'size-4' }) {
 
   )
 
+}
+
+
+function PaymentMethod({ method, isDark }) {
+  const value = String(method ?? '').toLowerCase().replace(/[\s_-]+/g, '')
+  const muted = isDark ? 'text-[#91a9c9]' : 'text-slate-500'
+
+  let label = method || 'Unknown'
+  let icon = 'card'
+
+  if (value.includes('upi')) {
+    icon = 'upi'
+  } else if (value.includes('cash')) {
+    icon = 'cash'
+  } else if (value.includes('bank') || value.includes('netbanking')) {
+    icon = 'bank'
+  } else if (value.includes('wallet') || value.includes('paypal')) {
+    icon = 'wallet'
+  } else if (
+    value.includes('card') ||
+    value.includes('visa') ||
+    value.includes('mastercard') ||
+    value.includes('credit') ||
+    value.includes('debit')
+  ) {
+    icon = 'card'
+  }
+
+  return (
+    <span className={`inline-flex items-center gap-2 whitespace-nowrap text-xs ${muted}`}>
+      <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-slate-500/10">
+        <Icon name={icon} className="size-4" />
+      </span>
+      <span>{label}</span>
+    </span>
+  )
 }
 
 
@@ -1203,7 +1356,25 @@ function Payments({ payments, onPaymentsChange, onRefund, onNotifyRenewal, isDar
 
                   <td className="px-4 py-3"><PaymentStatus isDark={isDark} status={payment.status} /></td>
 
-                  <td className={`whitespace-nowrap px-4 py-3 text-xs ${muted}`}>{payment.method}</td>
+                  <td className={`whitespace-nowrap px-4 py-3 text-xs ${muted}`}>
+                    {(() => {
+                      const iconName = getPaymentIcon(payment.method)
+                      const style = paymentMethodStyles[iconName] || paymentMethodStyles.card
+
+                      return (
+                        <div className="flex items-center gap-2">
+                          <span
+                            className="flex size-8 shrink-0 items-center justify-center rounded-lg"
+                            style={{ color: style.color, backgroundColor: style.background }}
+                          >
+                            <PayIcon name={iconName} />
+                          </span>
+
+                          <span>{payment.method}</span>
+                        </div>
+                      )
+                    })()}
+                  </td>
 
                   <td className={`whitespace-nowrap px-4 py-3 text-xs ${muted}`}>{formatDate(payment.date)}</td>
 
@@ -1356,118 +1527,118 @@ function Payments({ payments, onPaymentsChange, onRefund, onNotifyRenewal, isDar
         </div>
       </section>
 
-  {renewalToNotify && (
-    <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
-      <button aria-label="Close notification dialog" className="absolute inset-0 bg-slate-950/60" onClick={() => setRenewalToNotify(null)} type="button" />
-      <section
-        aria-labelledby="renewal-notify-title"
-        aria-modal="true"
-        className={`relative w-full max-w-md rounded-2xl border p-5 shadow-2xl md:p-6 ${isDark ? 'border-[#34445e] bg-[#10192d] text-slate-100' : 'border-slate-200 bg-white text-slate-900'}`}
-        role="dialog"
-      >
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <h2 className="text-base font-bold" id="renewal-notify-title">Send renewal reminder</h2>
-            <p className={`mt-1 text-xs ${muted}`}>Choose how to notify {renewalToNotify.name}.</p>
-          </div>
-          <button aria-label="Close dialog" className={`rounded-lg p-1.5 ${isDark ? 'text-[#91a9c9] hover:bg-[#202d43]' : 'text-slate-500 hover:bg-slate-100'}`} onClick={() => setRenewalToNotify(null)} type="button">
-            <svg aria-hidden="true" className="size-4" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="2" viewBox="0 0 24 24"><path d="m18 6-12 12M6 6l12 12" /></svg>
-          </button>
-        </div>
-
-        <div className={`mt-4 rounded-xl border p-3 ${isDark ? 'border-[#263249] bg-[#121e33]' : 'border-slate-200 bg-slate-50'}`}>
-          <p className="text-sm font-semibold">{renewalToNotify.name}</p>
-          <p className={`mt-1 break-all text-xs ${muted}`}>{renewalToNotify.email}</p>
-          <div className={`mt-3 flex items-center justify-between border-t pt-3 text-xs ${isDark ? 'border-[#263249]' : 'border-slate-200'}`}>
-            <span className={muted}>{renewalToNotify.plan} plan · {formatDate(renewalToNotify.renewalDate)}</span>
-            <span className="font-bold tabular-nums">{formatCurrency(renewalToNotify.amount)}</span>
-          </div>
-        </div>
-
-        <div className="mt-4 space-y-2">
-          <label className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3 ${renewalChannel === 'email' ? 'border-[#e36b45] bg-[#e36b45]/5' : isDark ? 'border-[#34445e]' : 'border-slate-200'}`}>
-            <input checked={renewalChannel === 'email'} className="mt-0.5 accent-[#a94f32]" name="renewal-channel" onChange={() => setRenewalChannel('email')} type="radio" />
-            <span>
-              <span className="block text-sm font-semibold">Email reminder</span>
-              <span className={`mt-0.5 block text-xs ${muted}`}>Prepare an email addressed to this customer.</span>
-            </span>
-          </label>
-          <label className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3 ${renewalChannel === 'in-app' ? 'border-[#e36b45] bg-[#e36b45]/5' : isDark ? 'border-[#34445e]' : 'border-slate-200'}`}>
-            <input checked={renewalChannel === 'in-app'} className="mt-0.5 accent-[#a94f32]" name="renewal-channel" onChange={() => setRenewalChannel('in-app')} type="radio" />
-            <span>
-              <span className="block text-sm font-semibold">In-app notification</span>
-              <span className={`mt-0.5 block text-xs ${muted}`}>Send a notification through the connected application service.</span>
-            </span>
-          </label>
-        </div>
-
-        <p className={`mt-3 text-[11px] leading-5 ${muted}`}>
-          {onNotifyRenewal
-            ? 'The selected channel will be handled by your notification callback.'
-            : renewalChannel === 'email'
-              ? 'This opens your default email app. Automatic delivery requires an email service/backend.'
-              : 'In-app delivery requires an onNotifyRenewal handler connected to your backend.'}
-        </p>
-
-        <div className="mt-5 flex justify-end gap-2">
-          <button className={`rounded-lg border px-4 py-2.5 text-xs font-semibold ${isDark ? 'border-[#34445e] hover:bg-[#202d43]' : 'border-slate-200 hover:bg-slate-50'}`} onClick={() => setRenewalToNotify(null)} type="button">Cancel</button>
-          <button
-            className="inline-flex items-center gap-2 rounded-lg bg-[#a94f32] px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-[#8f4029] disabled:cursor-not-allowed disabled:opacity-60"
-            disabled={sendingRenewalNotice}
-            onClick={async () => {
-              if (!renewalToNotify) return
-              if (onNotifyRenewal) {
-                try {
-                  setSendingRenewalNotice(true)
-                  await onNotifyRenewal(renewalToNotify, renewalChannel)
-                  setRenewalNotice(`${renewalChannel === 'email' ? 'Email reminder' : 'In-app notification'} requested for ${renewalToNotify.name}.`)
-                  setRenewalToNotify(null)
-                } catch (error) {
-                  setRenewalNotice(`Could not send a reminder to ${renewalToNotify.name}. Please try again.`)
-                } finally {
-                  setSendingRenewalNotice(false)
-                }
-                return
-              }
-              if (renewalChannel === 'email') {
-                const subject = encodeURIComponent(`Upcoming subscription renewal — ${renewalToNotify.plan}`)
-                const body = encodeURIComponent(
-                  `Hi ${renewalToNotify.name},\n\nThis is a reminder that your ${renewalToNotify.plan} subscription is scheduled to renew on ${formatDate(renewalToNotify.renewalDate)} for ${formatCurrency(renewalToNotify.amount)}.\n\nPlease contact us if you have any questions.\n\nRegards,\nAifa Gen Labs`
-                )
-                window.location.href = `mailto:${renewalToNotify.email}?subject=${subject}&body=${body}`
-                setRenewalNotice(`Email draft prepared for ${renewalToNotify.name}. Send it from your email app to complete delivery.`)
-                setRenewalToNotify(null)
-              } else {
-                setRenewalNotice('In-app notification was not sent because no notification backend is connected. Pass the onNotifyRenewal prop to enable delivery.')
-                setRenewalToNotify(null)
-              }
-            }}
-            type="button"
+      {renewalToNotify && (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
+          <button aria-label="Close notification dialog" className="absolute inset-0 bg-slate-950/60" onClick={() => setRenewalToNotify(null)} type="button" />
+          <section
+            aria-labelledby="renewal-notify-title"
+            aria-modal="true"
+            className={`relative w-full max-w-md rounded-2xl border p-5 shadow-2xl md:p-6 ${isDark ? 'border-[#34445e] bg-[#10192d] text-slate-100' : 'border-slate-200 bg-white text-slate-900'}`}
+            role="dialog"
           >
-            {sendingRenewalNotice ? 'Sending…' : renewalChannel === 'email' ? 'Prepare email' : 'Send notification'}
-          </button>
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <h2 className="text-base font-bold" id="renewal-notify-title">Send renewal reminder</h2>
+                <p className={`mt-1 text-xs ${muted}`}>Choose how to notify {renewalToNotify.name}.</p>
+              </div>
+              <button aria-label="Close dialog" className={`rounded-lg p-1.5 ${isDark ? 'text-[#91a9c9] hover:bg-[#202d43]' : 'text-slate-500 hover:bg-slate-100'}`} onClick={() => setRenewalToNotify(null)} type="button">
+                <svg aria-hidden="true" className="size-4" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="2" viewBox="0 0 24 24"><path d="m18 6-12 12M6 6l12 12" /></svg>
+              </button>
+            </div>
+
+            <div className={`mt-4 rounded-xl border p-3 ${isDark ? 'border-[#263249] bg-[#121e33]' : 'border-slate-200 bg-slate-50'}`}>
+              <p className="text-sm font-semibold">{renewalToNotify.name}</p>
+              <p className={`mt-1 break-all text-xs ${muted}`}>{renewalToNotify.email}</p>
+              <div className={`mt-3 flex items-center justify-between border-t pt-3 text-xs ${isDark ? 'border-[#263249]' : 'border-slate-200'}`}>
+                <span className={muted}>{renewalToNotify.plan} plan · {formatDate(renewalToNotify.renewalDate)}</span>
+                <span className="font-bold tabular-nums">{formatCurrency(renewalToNotify.amount)}</span>
+              </div>
+            </div>
+
+            <div className="mt-4 space-y-2">
+              <label className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3 ${renewalChannel === 'email' ? 'border-[#e36b45] bg-[#e36b45]/5' : isDark ? 'border-[#34445e]' : 'border-slate-200'}`}>
+                <input checked={renewalChannel === 'email'} className="mt-0.5 accent-[#a94f32]" name="renewal-channel" onChange={() => setRenewalChannel('email')} type="radio" />
+                <span>
+                  <span className="block text-sm font-semibold">Email reminder</span>
+                  <span className={`mt-0.5 block text-xs ${muted}`}>Prepare an email addressed to this customer.</span>
+                </span>
+              </label>
+              <label className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3 ${renewalChannel === 'in-app' ? 'border-[#e36b45] bg-[#e36b45]/5' : isDark ? 'border-[#34445e]' : 'border-slate-200'}`}>
+                <input checked={renewalChannel === 'in-app'} className="mt-0.5 accent-[#a94f32]" name="renewal-channel" onChange={() => setRenewalChannel('in-app')} type="radio" />
+                <span>
+                  <span className="block text-sm font-semibold">In-app notification</span>
+                  <span className={`mt-0.5 block text-xs ${muted}`}>Send a notification through the connected application service.</span>
+                </span>
+              </label>
+            </div>
+
+            <p className={`mt-3 text-[11px] leading-5 ${muted}`}>
+              {onNotifyRenewal
+                ? 'The selected channel will be handled by your notification callback.'
+                : renewalChannel === 'email'
+                  ? 'This opens your default email app. Automatic delivery requires an email service/backend.'
+                  : 'In-app delivery requires an onNotifyRenewal handler connected to your backend.'}
+            </p>
+
+            <div className="mt-5 flex justify-end gap-2">
+              <button className={`rounded-lg border px-4 py-2.5 text-xs font-semibold ${isDark ? 'border-[#34445e] hover:bg-[#202d43]' : 'border-slate-200 hover:bg-slate-50'}`} onClick={() => setRenewalToNotify(null)} type="button">Cancel</button>
+              <button
+                className="inline-flex items-center gap-2 rounded-lg bg-[#a94f32] px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-[#8f4029] disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={sendingRenewalNotice}
+                onClick={async () => {
+                  if (!renewalToNotify) return
+                  if (onNotifyRenewal) {
+                    try {
+                      setSendingRenewalNotice(true)
+                      await onNotifyRenewal(renewalToNotify, renewalChannel)
+                      setRenewalNotice(`${renewalChannel === 'email' ? 'Email reminder' : 'In-app notification'} requested for ${renewalToNotify.name}.`)
+                      setRenewalToNotify(null)
+                    } catch (error) {
+                      setRenewalNotice(`Could not send a reminder to ${renewalToNotify.name}. Please try again.`)
+                    } finally {
+                      setSendingRenewalNotice(false)
+                    }
+                    return
+                  }
+                  if (renewalChannel === 'email') {
+                    const subject = encodeURIComponent(`Upcoming subscription renewal — ${renewalToNotify.plan}`)
+                    const body = encodeURIComponent(
+                      `Hi ${renewalToNotify.name},\n\nThis is a reminder that your ${renewalToNotify.plan} subscription is scheduled to renew on ${formatDate(renewalToNotify.renewalDate)} for ${formatCurrency(renewalToNotify.amount)}.\n\nPlease contact us if you have any questions.\n\nRegards,\nAifa Gen Labs`
+                    )
+                    window.location.href = `mailto:${renewalToNotify.email}?subject=${subject}&body=${body}`
+                    setRenewalNotice(`Email draft prepared for ${renewalToNotify.name}. Send it from your email app to complete delivery.`)
+                    setRenewalToNotify(null)
+                  } else {
+                    setRenewalNotice('In-app notification was not sent because no notification backend is connected. Pass the onNotifyRenewal prop to enable delivery.')
+                    setRenewalToNotify(null)
+                  }
+                }}
+                type="button"
+              >
+                {sendingRenewalNotice ? 'Sending…' : renewalChannel === 'email' ? 'Prepare email' : 'Send notification'}
+              </button>
+            </div>
+          </section>
         </div>
-      </section>
-    </div>
-  )}
+      )}
 
-{
-  paymentToRefund && (
+      {
+        paymentToRefund && (
 
-    <RefundDialog
+          <RefundDialog
 
-      isDark={isDark}
+            isDark={isDark}
 
-      onCancel={() => setPaymentToRefund(null)}
+            onCancel={() => setPaymentToRefund(null)}
 
-      onConfirm={(refund) => confirmRefund(paymentToRefund, refund)}
+            onConfirm={(refund) => confirmRefund(paymentToRefund, refund)}
 
-      payment={paymentToRefund}
+            payment={paymentToRefund}
 
-    />
+          />
 
-  )
-}
+        )
+      }
 
     </div >
 
