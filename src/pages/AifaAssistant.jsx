@@ -49,8 +49,8 @@ function AifaAssistant({ isDark }) {
   const [isProcessing, setIsProcessing] = useState(false)
   const [voiceEnabled, setVoiceEnabled] = useState(false)
   const [welcomeShown, setWelcomeShown] = useState(false)
+  const [showSuggestedQuestions, setShowSuggestedQuestions] = useState(true)
   const scrollRef = useRef(null)
-  const hasSpokenRef = useRef(false)
   const messageCounterRef = useRef(0)
 
   const buildMessage = (sender, text) => ({
@@ -69,7 +69,7 @@ function AifaAssistant({ isDark }) {
     })
   }
 
-  const speakText = (text) => {
+  const speakText = (text, force = false) => {
     if (!text || !('speechSynthesis' in window)) {
       return
     }
@@ -77,7 +77,7 @@ function AifaAssistant({ isDark }) {
     const synth = window.speechSynthesis
     synth.cancel()
 
-    if (!voiceEnabled) {
+    if (!force && !voiceEnabled) {
       return
     }
 
@@ -112,15 +112,13 @@ function AifaAssistant({ isDark }) {
     setIsOpen((current) => {
       const next = !current
 
-      if (next && !welcomeShown) {
-        const welcomeMessage = buildMessage('assistant', assistantWelcomeMessage)
-        addMessage(welcomeMessage)
-        setWelcomeShown(true)
-
-        if (voiceEnabled && !hasSpokenRef.current) {
-          speakText(welcomeMessage.text)
-          hasSpokenRef.current = true
+      if (next) {
+        if (!welcomeShown) {
+          addMessage(buildMessage('assistant', assistantWelcomeMessage))
+          setWelcomeShown(true)
         }
+        speakText(assistantWelcomeMessage, true)
+        speakText(assistantWelcomeMessage, true)
       }
 
       if (!next && 'speechSynthesis' in window) {
@@ -137,6 +135,7 @@ function AifaAssistant({ isDark }) {
       return
     }
 
+    setShowSuggestedQuestions(false)
     addMessage(buildMessage('user', trimmedQuestion))
 
     const answer = findAnswerForQuestion(trimmedQuestion)
@@ -152,6 +151,7 @@ function AifaAssistant({ isDark }) {
     }
 
     setIsProcessing(true)
+    setShowSuggestedQuestions(false)
     addMessage(buildMessage('user', trimmedValue))
 
     const answer = findAnswerForQuestion(trimmedValue)
@@ -185,7 +185,7 @@ function AifaAssistant({ isDark }) {
       {isOpen && (
         <section
           aria-label="Aifa AI Assistant panel"
-          className={`flex w-[min(24rem,calc(100vw-1.5rem))] flex-col overflow-hidden rounded-2xl border ${panelTheme}`}
+          className={`flex h-[min(38rem,calc(100dvh-7rem))] w-[min(24rem,calc(100vw-1.5rem))] flex-col overflow-hidden rounded-2xl border ${panelTheme}`}
         >
           <header
             className={`flex items-center justify-between border-b px-4 py-3 ${isDark ? 'border-[#2d3a5a]' : 'border-[#edf2f7]'}`}
@@ -233,7 +233,7 @@ function AifaAssistant({ isDark }) {
             </div>
           </header>
 
-          <div className={`flex max-h-[26rem] flex-col gap-3 overflow-y-auto p-3 ${scrollAreaTheme}`} ref={scrollRef}>
+          <div className={`flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-3 ${scrollAreaTheme}`} ref={scrollRef}>
             {!messages.length && (
               <div className={`rounded-2xl border px-3 py-2.5 text-sm leading-6 ${isDark ? 'border-[#2a3961] bg-[#101b2e] text-slate-100' : 'border-[#e6eef7] bg-white text-slate-700'}`}>
                 {assistantWelcomeMessage}
@@ -276,23 +276,47 @@ function AifaAssistant({ isDark }) {
               )
             })}
 
-            <div className="pt-1">
-              <p className={`mb-2 text-[11px] font-medium uppercase tracking-[0.08em] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                Suggested questions
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {assistantData.map((item) => (
-                  <button
-                    className={`rounded-full border px-2.5 py-1.5 text-xs transition-colors ${isDark ? 'border-[#2a3961] bg-[#0f172a] text-slate-100 hover:bg-[#162642]' : 'border-[#dfe7f5] bg-white text-slate-700 hover:bg-slate-50'}`}
-                    key={item.id}
-                    onClick={() => handleSuggestedQuestion(item.question)}
-                    type="button"
-                  >
-                    {item.question}
-                  </button>
-                ))}
+            {showSuggestedQuestions ? (
+              <div className="pt-1">
+                <div className="mb-2 flex items-center justify-between gap-2">
+                  <p className={`text-[11px] font-medium uppercase tracking-[0.08em] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                    Suggested questions
+                  </p>
+                  {messages.length > 1 && (
+                    <button
+                      aria-controls="aifa-assistant-suggestions"
+                      aria-expanded="true"
+                      className={`text-[11px] font-medium ${isDark ? 'text-[#9cb7ff] hover:text-white' : 'text-indigo-600 hover:text-indigo-800'}`}
+                      onClick={() => setShowSuggestedQuestions(false)}
+                      type="button"
+                    >
+                      Hide
+                    </button>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-2" id="aifa-assistant-suggestions">
+                  {assistantData.map((item) => (
+                    <button
+                      className={`rounded-full border px-2.5 py-1.5 text-xs transition-colors ${isDark ? 'border-[#2a3961] bg-[#0f172a] text-slate-100 hover:bg-[#162642]' : 'border-[#dfe7f5] bg-white text-slate-700 hover:bg-slate-50'}`}
+                      key={item.id}
+                      onClick={() => handleSuggestedQuestion(item.question)}
+                      type="button"
+                    >
+                      {item.question}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            ) : (
+              <button
+                aria-expanded="false"
+                className={`self-start rounded-full border px-3 py-1.5 text-xs font-medium ${isDark ? 'border-[#2a3961] bg-[#0f172a] text-[#c7d5f5] hover:bg-[#162642]' : 'border-[#dfe7f5] bg-white text-indigo-700 hover:bg-slate-50'}`}
+                onClick={() => setShowSuggestedQuestions(true)}
+                type="button"
+              >
+                Browse suggested questions
+              </button>
+            )}
           </div>
 
           <form

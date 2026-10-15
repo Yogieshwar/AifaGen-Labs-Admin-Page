@@ -1,4 +1,4 @@
-export const assistantWelcomeMessage = 'Hello! 👋 I\'m your Aifa AI Assistant. I can help you understand the dashboard, find important information, and navigate its features. Choose a question below or type what you\'d like to know.'
+export const assistantWelcomeMessage = 'Hi! 👋 I\'m Aifa, your AI-powered assistant for the Aifa Gen Labs admin dashboard. I can help you navigate jobs, candidates, recruiters, payments, and AI usage. Choose a suggested question or type what you would like to know to get started.'
 
 export const assistantData = [
   {
