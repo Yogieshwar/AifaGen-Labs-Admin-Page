@@ -1,0 +1,1452 @@
+@import "tailwindcss";
+
+:root {
+  font-family: Arial, Helvetica, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-optical-sizing: auto;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.app-shell {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+}
+
+.app-shell::before {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+}
+
+.app-shell--dark {
+  background: #080a18 !important;
+  color: #f4f5ff;
+}
+
+.app-shell--dark::before {
+  background:
+    radial-gradient(ellipse at 88% 2%, rgb(93 76 255 / 31%), transparent 46rem),
+    radial-gradient(ellipse at 38% 52%, rgb(34 103 255 / 16%), transparent 50rem),
+    radial-gradient(ellipse at 96% 88%, rgb(145 73 255 / 15%), transparent 42rem),
+    linear-gradient(145deg, #0a0c1b, #080a17 55%, #0b0d20);
+}
+
+.app-shell--light {
+  background: #f4f6fc !important;
+  color: #15172a;
+}
+
+.app-shell--light::before {
+  background:
+    radial-gradient(ellipse at 88% 2%, rgb(113 91 255 / 18%), transparent 46rem),
+    radial-gradient(ellipse at 38% 52%, rgb(37 99 235 / 9%), transparent 50rem),
+    radial-gradient(ellipse at 96% 88%, rgb(145 73 255 / 8%), transparent 42rem),
+    linear-gradient(145deg, #f8f9ff, #f2f5fb 55%, #f7f7ff);
+}
+
+.app-shell .app-content {
+  position: relative;
+  min-height: 100vh;
+  background: transparent !important;
+  transition: margin-left 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.app-shell {
+  scrollbar-color: #b9b3a7 #eeebe3;
+  scrollbar-width: thin;
+}
+
+.app-shell--dark {
+  scrollbar-color: #66645a #292a26;
+}
+
+.app-shell * {
+  scrollbar-color: inherit;
+  scrollbar-width: thin;
+}
+
+.app-shell *::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.app-shell *::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: #eeebe3;
+}
+
+.app-shell *::-webkit-scrollbar-thumb {
+  border: 2px solid #eeebe3;
+  border-radius: 999px;
+  background: #b9b3a7;
+  transition: background-color 180ms ease;
+}
+
+.app-shell *::-webkit-scrollbar-thumb:hover {
+  background: #a94f32;
+}
+
+.app-shell *::-webkit-scrollbar-corner {
+  background: #eeebe3;
+}
+
+.app-shell--dark *::-webkit-scrollbar-track,
+.app-shell--dark *::-webkit-scrollbar-corner {
+  background: #292a26;
+}
+
+.app-shell--dark *::-webkit-scrollbar-thumb {
+  border-color: #292a26;
+  background: #66645a;
+}
+
+.app-shell--dark *::-webkit-scrollbar-thumb:hover {
+  background: #d27a55;
+}
+
+.app-shell .app-sidebar {
+  backdrop-filter: blur(22px);
+}
+
+.app-shell--dark .app-sidebar {
+  border-color: rgb(147 155 255 / 13%);
+  background: linear-gradient(180deg, rgb(14 16 34 / 97%), rgb(9 11 24 / 98%));
+  box-shadow: 14px 0 44px rgb(0 0 0 / 16%);
+}
+
+.app-shell--light .app-sidebar {
+  border-color: rgb(100 116 139 / 12%);
+  background: rgb(250 251 255 / 91%);
+  box-shadow: 12px 0 38px rgb(55 65 101 / 6%);
+}
+
+.app-shell .app-sidebar-brand {
+  border-color: rgb(129 140 248 / 12%);
+}
+
+.app-shell--dark .app-sidebar [aria-current="page"] {
+  border: 1px solid rgb(165 180 252 / 15%);
+  background: linear-gradient(110deg, rgb(79 70 229 / 27%), rgb(37 99 235 / 17%));
+  box-shadow: inset 0 1px rgb(255 255 255 / 4%), 0 6px 18px rgb(37 70 220 / 11%);
+}
+
+.app-shell--light .app-sidebar [aria-current="page"] {
+  border: 1px solid rgb(99 102 241 / 11%);
+  background: linear-gradient(110deg, rgb(99 102 241 / 10%), rgb(37 99 235 / 7%));
+  box-shadow: 0 5px 16px rgb(37 70 220 / 6%);
+}
+
+.app-shell .app-mobile-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(18px);
+}
+
+.app-shell--dark .app-mobile-header {
+  border-color: rgb(147 155 255 / 12%);
+  background: rgb(10 12 27 / 85%);
+}
+
+.app-shell--light .app-mobile-header {
+  border-color: rgb(100 116 139 / 12%);
+  background: rgb(250 251 255 / 87%);
+}
+
+.app-shell main section[class*="rounded-"][class*="border"],
+.app-shell main article[class*="rounded-"][class*="border"] {
+  overflow: hidden;
+  border-color: rgb(100 116 139 / 15%);
+  border-radius: 1.15rem;
+  box-shadow: 0 12px 32px rgb(30 41 59 / 5%), inset 0 1px white;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.app-shell--dark main section[class*="rounded-"][class*="border"],
+.app-shell--dark main article[class*="rounded-"][class*="border"] {
+  border-color: rgb(129 140 248 / 14%);
+  background-image: linear-gradient(145deg, rgb(19 22 43 / 94%), rgb(11 13 27 / 97%));
+  box-shadow: 0 16px 38px rgb(1 3 15 / 23%), 0 0 34px rgb(88 76 255 / 8%), inset 0 1px rgb(255 255 255 / 3%);
+}
+
+.app-shell--light main section[class*="rounded-"][class*="border"],
+.app-shell--light main article[class*="rounded-"][class*="border"] {
+  background-image: linear-gradient(145deg, rgb(255 255 255 / 96%), rgb(247 249 255 / 96%));
+  box-shadow: 0 12px 32px rgb(30 41 59 / 5%), 0 0 30px rgb(100 93 255 / 7%), inset 0 1px white;
+}
+
+.app-shell main section[class*="rounded-"][class*="border"]:hover,
+.app-shell main article[class*="rounded-"][class*="border"]:hover {
+  border-color: rgb(129 140 248 / 30%);
+  box-shadow: 0 16px 38px rgb(37 70 220 / 9%), inset 0 1px rgb(255 255 255 / 55%);
+}
+
+.app-shell main :is(thead, tfoot) {
+  background-image: linear-gradient(90deg, rgb(99 102 241 / 7%), transparent);
+}
+
+.app-shell--dark main :is(thead, tfoot) {
+  color: #b5bce2;
+}
+
+.app-shell main tbody tr {
+  transition: background-color 150ms ease;
+}
+
+.app-shell--dark main tbody tr:hover {
+  background-color: rgb(99 102 241 / 7%);
+}
+
+.app-shell--light main tbody tr:hover {
+  background-color: rgb(99 102 241 / 4%);
+}
+
+.app-shell main :is(input, select, textarea) {
+  backdrop-filter: blur(12px);
+}
+
+.app-shell--dark main :is(input, select, textarea) {
+  border-color: rgb(165 180 252 / 17%);
+  background-color: rgb(12 14 30 / 76%);
+}
+
+.app-shell--light main :is(input, select, textarea) {
+  border-color: rgb(100 116 139 / 18%);
+  background-color: rgb(255 255 255 / 88%);
+  box-shadow: 0 3px 10px rgb(30 41 59 / 3%);
+}
+
+.app-shell button {
+  transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.app-shell button[class*="bg-[#172033]"],
+.app-shell button[class*="bg-indigo-"] {
+  border: 1px solid rgb(165 180 252 / 19%);
+  background-image: linear-gradient(115deg, #4f46e5, #2563eb 58%, #6366f1);
+  color: #fff;
+  box-shadow: 0 6px 17px rgb(37 70 220 / 17%);
+}
+
+.app-shell button[class*="bg-[#172033]"]:hover,
+.app-shell button[class*="bg-indigo-"]:hover {
+  box-shadow: 0 9px 24px rgb(53 86 235 / 27%);
+  transform: translateY(-1px);
+}
+
+.login-page {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #080a18 !important;
+}
+
+.login-page::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 18% 22%, rgb(68 93 219 / 45%), transparent 38rem),
+    radial-gradient(ellipse at 82% 77%, rgb(111 63 255 / 32%), transparent 42rem),
+    linear-gradient(145deg, #080a18, #11132b 56%, #090b1b);
+  content: "";
+}
+
+.login-card {
+  border-color: rgb(165 180 252 / 17%);
+  background: linear-gradient(145deg, rgb(20 22 45 / 93%), rgb(10 12 27 / 96%));
+  box-shadow: 0 28px 80px rgb(0 0 0 / 45%), 0 0 80px rgb(79 70 229 / 14%), inset 0 1px rgb(255 255 255 / 5%);
+  backdrop-filter: blur(22px);
+}
+
+.login-mark {
+  background: linear-gradient(135deg, #6366f1, #2563eb 60%, #8b5cf6);
+  color: white;
+  box-shadow: 0 8px 24px rgb(76 82 245 / 35%);
+}
+
+.login-primary-button {
+  background: linear-gradient(115deg, #4f46e5, #2563eb 58%, #6366f1);
+  color: white;
+  box-shadow: 0 8px 22px rgb(37 70 220 / 32%);
+}
+
+.login-primary-button:hover {
+  background: linear-gradient(115deg, #5b52f0, #3474f5 58%, #746bff);
+  box-shadow: 0 10px 28px rgb(53 86 235 / 42%);
+}
+
+.recruiter-dashboard {
+  position: relative;
+  isolation: isolate;
+}
+
+.recruiter-dashboard::before {
+  position: absolute;
+  z-index: -1;
+  inset: -2rem -1.5rem;
+  pointer-events: none;
+  content: "";
+}
+
+.recruiter-dashboard--dark::before {
+  background:
+    radial-gradient(ellipse at 86% 3%, rgb(93 76 255 / 26%), transparent 36rem),
+    radial-gradient(ellipse at 2% 34%, rgb(34 103 255 / 15%), transparent 34rem);
+}
+
+.recruiter-dashboard--light::before {
+  background:
+    radial-gradient(ellipse at 86% 3%, rgb(113 91 255 / 14%), transparent 36rem),
+    radial-gradient(ellipse at 2% 34%, rgb(37 99 235 / 8%), transparent 34rem);
+}
+
+.recruiter-dashboard .recruiter-panel {
+  overflow: hidden;
+  border-radius: 1.25rem;
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.recruiter-dashboard--dark .recruiter-panel {
+  border-color: rgb(129 140 248 / 14%);
+  background: linear-gradient(145deg, rgb(19 22 43 / 96%), rgb(11 13 27 / 98%));
+  box-shadow: 0 18px 44px rgb(1 3 15 / 27%), inset 0 1px rgb(255 255 255 / 3%);
+}
+
+.recruiter-dashboard--light .recruiter-panel {
+  border-color: rgb(100 116 139 / 17%);
+  background: linear-gradient(145deg, rgb(255 255 255 / 98%), rgb(248 250 255 / 98%));
+  box-shadow: 0 10px 28px rgb(30 41 59 / 6%), inset 0 1px white;
+}
+
+.recruiter-dashboard .recruiter-metric {
+  position: relative;
+  overflow: hidden;
+}
+
+.recruiter-dashboard .recruiter-metric::after {
+  position: absolute;
+  top: -3.5rem;
+  right: -3.5rem;
+  width: 8rem;
+  height: 8rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgb(91 92 255 / 17%), transparent 70%);
+  content: "";
+  pointer-events: none;
+}
+
+.recruiter-dashboard--dark .recruiter-metric {
+  background: linear-gradient(145deg, rgb(24 26 52 / 96%), rgb(13 16 34 / 98%));
+}
+
+.recruiter-dashboard--light .recruiter-metric {
+  background: linear-gradient(145deg, #fff, #f5f7ff);
+}
+
+.recruiter-dashboard .recruiter-panel-header {
+  background: linear-gradient(90deg, rgb(99 102 241 / 7%), transparent 70%);
+}
+
+.recruiter-dashboard--dark .recruiter-panel-header {
+  border-color: rgb(129 140 248 / 13%);
+}
+
+.recruiter-dashboard--light .recruiter-panel-header {
+  border-color: rgb(100 116 139 / 14%);
+}
+
+.recruiter-dashboard--dark .recruiter-table-head {
+  background: linear-gradient(90deg, #171a36, #111426);
+}
+
+.recruiter-dashboard--light .recruiter-table-head {
+  background: linear-gradient(90deg, #f1f3ff, #f8faff);
+}
+
+.recruiter-dashboard .recruiter-data-row {
+  transition: background-color 160ms ease;
+}
+
+.recruiter-dashboard--dark .recruiter-data-row:hover {
+  background-color: rgb(99 102 241 / 9%);
+}
+
+.recruiter-dashboard--light .recruiter-data-row:hover {
+  background-color: rgb(99 102 241 / 5%);
+}
+
+.recruiter-dashboard--dark .recruiter-primary-button {
+  border: 1px solid rgb(165 180 252 / 25%);
+  background: linear-gradient(115deg, #4f46e5, #2563eb 58%, #6366f1);
+  box-shadow: 0 7px 18px rgb(37 70 220 / 25%);
+}
+
+.recruiter-dashboard--dark .recruiter-primary-button:hover {
+  background: linear-gradient(115deg, #5b52f0, #3474f5 58%, #746bff);
+  box-shadow: 0 9px 24px rgb(53 86 235 / 36%);
+}
+
+.recruiter-dashboard--light .recruiter-primary-button {
+  background: linear-gradient(115deg, #4f46e5, #2563eb 58%, #6366f1);
+  box-shadow: 0 6px 16px rgb(37 70 220 / 17%);
+}
+
+.recruiter-dashboard .recruiter-glass-control {
+  backdrop-filter: blur(12px);
+}
+
+.recruiter-dashboard--dark .recruiter-glass-control {
+  border-color: rgb(165 180 252 / 18%);
+  background: rgb(20 23 45 / 70%);
+  box-shadow: inset 0 1px rgb(255 255 255 / 4%);
+}
+
+.recruiter-dashboard--light .recruiter-glass-control {
+  background: rgb(255 255 255 / 75%);
+  box-shadow: 0 4px 12px rgb(30 41 59 / 5%);
+}
+
+.recruiter-dashboard .recruiter-subpanel {
+  border-top: 1px solid rgb(129 140 248 / 13%);
+  padding-top: 0.75rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell main section[class*="rounded-"][class*="border"],
+  .app-shell main article[class*="rounded-"][class*="border"],
+  .app-shell main tbody tr,
+  .app-shell button {
+    transition: none;
+  }
+
+  .recruiter-dashboard .recruiter-panel,
+  .recruiter-dashboard .recruiter-data-row {
+    transition: none;
+  }
+}
+
+/* Flat editorial treatment: warm paper, ink, and a restrained clay accent. */
+.app-shell--light {
+  background: #f4f1e9 !important;
+  color: #20211e;
+}
+
+.app-shell--light::before,
+.app-shell--dark::before {
+  background: none !important;
+}
+
+.app-shell--dark {
+  background: #191a17 !important;
+  color: #f2f0e9;
+}
+
+.app-shell .app-sidebar {
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  transition:
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    width 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.app-shell--light .app-sidebar {
+  border-color: #dedbd2;
+  background: #f8f6f0;
+}
+
+.app-shell--dark .app-sidebar {
+  border-color: #3b3c36;
+  background: #20211e;
+}
+
+.app-shell .app-sidebar-brand {
+  border-color: inherit;
+}
+
+.app-shell--light .app-sidebar [aria-current="page"] {
+  border-color: #d2cdc0;
+  background: #eae6dc;
+  box-shadow: inset 3px 0 #a94f32;
+  color: #24231f;
+}
+
+.app-shell--dark .app-sidebar [aria-current="page"] {
+  border-color: #4b4b43;
+  background: #30312c;
+  box-shadow: inset 3px 0 #d27a55;
+  color: #fffdf6;
+}
+
+.app-shell .app-sidebar nav {
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .app-shell .app-sidebar {
+    width: 4.5rem;
+    overflow-x: hidden;
+  }
+
+  .app-shell .app-sidebar:hover ~ .app-content,
+  .app-shell .app-sidebar:focus-within ~ .app-content {
+    margin-left: 16.625rem;
+  }
+
+  .app-shell .app-sidebar:hover,
+  .app-shell .app-sidebar:focus-within {
+    width: 16.625rem;
+    box-shadow: 12px 0 26px rgb(32 33 30 / 10%) !important;
+  }
+
+  .app-shell .app-sidebar-brand {
+    justify-content: center;
+    gap: 0;
+    padding-inline: 0;
+    transition: gap 220ms ease, padding 220ms ease;
+  }
+
+  .app-shell .app-sidebar-brand > div:last-child,
+  .app-shell .app-sidebar-label,
+  .app-shell .app-sidebar-email,
+  .app-shell .app-sidebar-theme-switch {
+    width: 0;
+    overflow: hidden;
+    opacity: 0;
+    white-space: nowrap;
+    transition:
+      width 220ms ease,
+      opacity 160ms ease,
+      margin 220ms ease;
+  }
+
+  .app-shell .app-sidebar-brand > div:last-child {
+    flex: 0 0 auto;
+  }
+
+  .app-shell .app-sidebar nav {
+    padding-inline: 0.5rem;
+  }
+
+  .app-shell .app-sidebar nav > div {
+    margin-bottom: 0.5rem;
+  }
+
+  .app-shell .app-sidebar nav h2 {
+    height: 0;
+    overflow: hidden;
+    padding: 0;
+    opacity: 0;
+    transition: height 220ms ease, opacity 160ms ease;
+  }
+
+  .app-shell .app-sidebar nav button {
+    justify-content: center;
+    gap: 0;
+    padding-inline: 0;
+  }
+
+  .app-shell .app-sidebar footer {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .app-shell .app-sidebar footer > div {
+    justify-content: center;
+    gap: 0;
+  }
+
+  .app-shell .app-sidebar-theme-icon {
+    font-size: 1.125rem;
+  }
+
+  .app-shell .app-sidebar-signout {
+    justify-content: center;
+    gap: 0;
+  }
+
+  .app-shell .app-sidebar:hover .app-sidebar-brand,
+  .app-shell .app-sidebar:focus-within .app-sidebar-brand {
+    justify-content: flex-start;
+    gap: 0.75rem;
+    padding-inline: 1.375rem;
+  }
+
+  .app-shell .app-sidebar:hover .app-sidebar-brand > div:last-child,
+  .app-shell .app-sidebar:focus-within .app-sidebar-brand > div:last-child {
+    width: 9rem;
+    opacity: 1;
+  }
+
+  .app-shell .app-sidebar:hover .app-sidebar-label,
+  .app-shell .app-sidebar:focus-within .app-sidebar-label {
+    width: 8.5rem;
+    opacity: 1;
+  }
+
+  .app-shell .app-sidebar:hover .app-sidebar-email,
+  .app-shell .app-sidebar:focus-within .app-sidebar-email {
+    width: 12rem;
+    opacity: 1;
+  }
+
+  .app-shell .app-sidebar:hover .app-sidebar-theme-switch,
+  .app-shell .app-sidebar:focus-within .app-sidebar-theme-switch {
+    width: 2.5rem;
+    opacity: 1;
+  }
+
+  .app-shell .app-sidebar:hover nav,
+  .app-shell .app-sidebar:focus-within nav {
+    padding-inline: 0.8125rem;
+  }
+
+  .app-shell .app-sidebar:hover nav > div,
+  .app-shell .app-sidebar:focus-within nav > div {
+    margin-bottom: 1rem;
+  }
+
+  .app-shell .app-sidebar:hover nav h2,
+  .app-shell .app-sidebar:focus-within nav h2 {
+    height: 2rem;
+    padding: 0.5rem 0.5625rem 0.375rem;
+    opacity: 1;
+  }
+
+  .app-shell .app-sidebar:hover nav button,
+  .app-shell .app-sidebar:focus-within nav button {
+    justify-content: flex-start;
+    gap: 0.75rem;
+    padding-inline: 0.75rem;
+  }
+
+  .app-shell .app-sidebar:hover footer,
+  .app-shell .app-sidebar:focus-within footer {
+    padding-inline: 1.0625rem;
+  }
+
+  .app-shell .app-sidebar:hover footer > div,
+  .app-shell .app-sidebar:focus-within footer > div {
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .app-shell .app-sidebar:hover .app-sidebar-signout,
+  .app-shell .app-sidebar:focus-within .app-sidebar-signout {
+    justify-content: flex-start;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-height: 760px) {
+  .app-shell .app-sidebar-brand {
+    height: 4rem;
+  }
+
+  .app-shell .app-sidebar nav {
+    padding-block: 0.25rem;
+  }
+
+  .app-shell .app-sidebar nav > div {
+    margin-bottom: 0;
+  }
+
+  .app-shell .app-sidebar nav h2 {
+    padding-top: 0.125rem;
+    padding-bottom: 0;
+    line-height: 1.125rem;
+  }
+
+  .app-shell .app-sidebar nav button {
+    height: 1.875rem;
+  }
+
+  .app-shell .app-sidebar footer {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .app-shell .app-sidebar:hover nav > div,
+    .app-shell .app-sidebar:focus-within nav > div {
+      margin-bottom: 0.125rem;
+    }
+
+    .app-shell .app-sidebar:hover nav h2,
+    .app-shell .app-sidebar:focus-within nav h2 {
+      height: 1.5rem;
+      padding-top: 0.25rem;
+      padding-bottom: 0.125rem;
+    }
+  }
+}
+
+@media (max-height: 520px) {
+  .app-shell .app-sidebar nav > div,
+  .app-shell .app-sidebar:hover nav > div,
+  .app-shell .app-sidebar:focus-within nav > div {
+    margin-bottom: 0;
+  }
+
+  .app-shell .app-sidebar nav h2,
+  .app-shell .app-sidebar:hover nav h2,
+  .app-shell .app-sidebar:focus-within nav h2 {
+    height: 0;
+    overflow: hidden;
+    padding: 0;
+    opacity: 0;
+  }
+}
+
+.app-shell .app-mobile-header {
+  backdrop-filter: none !important;
+}
+
+.app-shell--light .app-mobile-header {
+  border-color: #dedbd2;
+  background: #f8f6f0;
+}
+
+.app-shell--dark .app-mobile-header {
+  border-color: #3b3c36;
+  background: #20211e;
+}
+
+.app-shell main section[class*="rounded-"][class*="border"],
+.app-shell main article[class*="rounded-"][class*="border"] {
+  border-radius: 0.7rem;
+  box-shadow: none;
+  transition:
+    border-color 220ms ease,
+    background-color 220ms ease,
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.app-shell--light main section[class*="rounded-"][class*="border"],
+.app-shell--light main article[class*="rounded-"][class*="border"] {
+  border-color: #dedbd2;
+  background-color: #fffefa;
+  background-image: none;
+}
+
+.app-shell--dark main section[class*="rounded-"][class*="border"],
+.app-shell--dark main article[class*="rounded-"][class*="border"] {
+  border-color: #3b3c36;
+  background-color: #242521;
+  background-image: none;
+}
+
+.app-shell main section[class*="rounded-"][class*="border"]:hover,
+.app-shell main article[class*="rounded-"][class*="border"]:hover {
+  border-color: #b9b2a4;
+  box-shadow: none;
+}
+
+.app-shell--dark main section[class*="rounded-"][class*="border"]:hover,
+.app-shell--dark main article[class*="rounded-"][class*="border"]:hover {
+  border-color: #666459;
+}
+
+.app-shell main article[class*="hover:-translate-y"]:hover {
+  transform: translateY(-2px);
+}
+
+.app-shell main section[aria-labelledby="plans-ending-title"] ul {
+  display: block;
+}
+
+.app-shell--light main section[aria-labelledby="plans-ending-title"] li,
+.app-shell--dark main section[aria-labelledby="plans-ending-title"] li {
+  border: 0;
+  border-bottom: 1px solid #dedbd2;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0.9rem 0;
+}
+
+.app-shell--dark main section[aria-labelledby="plans-ending-title"] li {
+  border-color: #3b3c36;
+}
+
+.app-shell main section[aria-labelledby="plans-ending-title"] li:last-child {
+  border-bottom: 0;
+}
+
+.app-shell main section[aria-labelledby="plans-ending-title"] li:hover {
+  border-color: #dedbd2;
+  box-shadow: none;
+  transform: none;
+}
+
+.app-shell--dark main section[aria-labelledby="plans-ending-title"] li:hover {
+  border-color: #3b3c36;
+}
+
+.app-shell--light main :is(thead, tfoot) {
+  background: #eeebe3;
+  color: #4d4b44;
+}
+
+.app-shell--dark main :is(thead, tfoot) {
+  background: #30312c;
+  color: #e4e0d5;
+}
+
+.app-shell--light main tbody tr:hover {
+  background-color: #f4f1e9;
+}
+
+.app-shell--dark main tbody tr:hover {
+  background-color: #2e2f2a;
+}
+
+.app-shell main :is(input, select, textarea) {
+  border-radius: 0.45rem;
+  backdrop-filter: none !important;
+  box-shadow: none;
+  transition: border-color 180ms ease, background-color 180ms ease;
+}
+
+.app-shell--light main :is(input, select, textarea) {
+  border-color: #c9c4b8;
+  background-color: #fffefa;
+  color: #20211e;
+}
+
+.app-shell--dark main :is(input, select, textarea) {
+  border-color: #55564e;
+  background-color: #1c1d1a;
+  color: #f2f0e9;
+}
+
+.app-shell main :is(input, select, textarea):focus {
+  border-color: #a94f32 !important;
+  outline: 2px solid rgb(169 79 50 / 18%);
+  outline-offset: 1px;
+}
+
+.app-shell button {
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.app-shell button:active {
+  transform: scale(0.98);
+}
+
+.app-shell button[class*="bg-[#172033]"],
+.app-shell button[class*="bg-indigo-"] {
+  border-color: #20211e;
+  background: #20211e;
+  background-image: none;
+  box-shadow: none;
+  color: #fffefa;
+}
+
+.app-shell button[class*="bg-[#172033]"]:hover,
+.app-shell button[class*="bg-indigo-"]:hover {
+  background: #a94f32;
+  box-shadow: none;
+  transform: translateY(-1px);
+}
+
+.app-shell [class*="text-[#91a9c9]"],
+.app-shell [class*="text-[#b5c3d6]"],
+.app-shell [class*="text-[#b5bce2]"] {
+  color: #a7a49b !important;
+}
+
+.app-shell--light [class*="text-[#718096]"],
+.app-shell--light [class*="text-[#62768f]"],
+.app-shell--light [class*="text-[#64748b]"],
+.app-shell--light [class*="text-[#516984]"] {
+  color: #68665f !important;
+}
+
+.app-shell--light [class*="bg-[#eeecff]"],
+.app-shell--light [class*="bg-[#302d55]"],
+.app-shell--dark [class*="bg-[#302d55]"] {
+  background-color: #eee2d9 !important;
+}
+
+.app-shell [class*="text-[#6356c8]"],
+.app-shell [class*="text-[#c5bcff]"] {
+  color: #8c452e !important;
+}
+
+.app-shell [class*="bg-[#8b7cf6]"] {
+  background-color: #a94f32 !important;
+}
+
+.app-shell .animate-pulse {
+  border-radius: 0.45rem;
+}
+
+.app-shell--light .animate-pulse {
+  background-color: #e9e5dc;
+}
+
+.app-shell--dark .animate-pulse {
+  background-color: #30312c;
+}
+
+.login-page {
+  overflow: auto;
+  background: #f4f1e9 !important;
+  color: #20211e !important;
+}
+
+.login-page::before {
+  display: none;
+}
+
+.login-card {
+  border-color: #dedbd2;
+  border-radius: 0.7rem;
+  background: #fffefa;
+  box-shadow: none;
+  backdrop-filter: none;
+  color: #20211e;
+}
+
+.login-mark {
+  border-radius: 0.45rem;
+  background: #20211e;
+  box-shadow: none;
+  color: #fffefa;
+}
+
+.login-card p,
+.login-card input {
+  color: #68665f;
+}
+
+.login-card input {
+  border-color: #c9c4b8;
+  border-radius: 0.45rem;
+  background: #fffefa;
+}
+
+.login-primary-button {
+  border-radius: 0.45rem;
+  background: #a94f32;
+  box-shadow: none;
+  color: #fffefa;
+}
+
+.login-primary-button:hover {
+  background: #873e28;
+  box-shadow: none;
+}
+
+.recruiter-dashboard::before {
+  display: none;
+}
+
+.recruiter-dashboard .recruiter-panel {
+  border-radius: 0.7rem;
+  box-shadow: none;
+  transition: border-color 220ms ease, transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.recruiter-dashboard--light .recruiter-panel,
+.recruiter-dashboard--dark .recruiter-panel,
+.recruiter-dashboard--light .recruiter-metric,
+.recruiter-dashboard--dark .recruiter-metric {
+  background: #fffefa;
+  box-shadow: none;
+}
+
+.recruiter-dashboard--dark .recruiter-panel,
+.recruiter-dashboard--dark .recruiter-metric {
+  border-color: #3b3c36;
+  background: #242521;
+}
+
+.recruiter-dashboard .recruiter-metric::after {
+  display: none;
+}
+
+.recruiter-dashboard .recruiter-panel-header,
+.recruiter-dashboard--light .recruiter-table-head,
+.recruiter-dashboard--dark .recruiter-table-head {
+  background: #eeebe3;
+}
+
+.recruiter-dashboard--dark .recruiter-panel-header,
+.recruiter-dashboard--dark .recruiter-table-head {
+  background: #30312c;
+}
+
+.recruiter-dashboard--light .recruiter-primary-button,
+.recruiter-dashboard--dark .recruiter-primary-button {
+  border-color: #20211e;
+  background: #20211e;
+  background-image: none;
+  box-shadow: none;
+}
+
+.recruiter-dashboard--light .recruiter-primary-button:hover,
+.recruiter-dashboard--dark .recruiter-primary-button:hover {
+  background: #a94f32;
+  box-shadow: none;
+}
+
+.recruiter-dashboard .recruiter-glass-control {
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+.recruiter-dashboard--light .recruiter-glass-control {
+  background: #fffefa;
+}
+
+.recruiter-dashboard--dark .recruiter-glass-control {
+  border-color: #55564e;
+  background: #1c1d1a;
+}
+
+.recruiter-workspace {
+  align-items: start;
+}
+
+.recruiter-team-panel {
+  height: calc(100vh - 2rem);
+  max-height: calc(100vh - 2rem);
+}
+
+.recruiter-list {
+  min-height: 0;
+  flex: 1;
+}
+
+.recruiter-list-item {
+  transition: background-color 160ms ease, box-shadow 180ms ease;
+}
+
+.recruiter-list-item[aria-pressed="true"] {
+  box-shadow: inset 3px 0 #a94f32;
+}
+
+.recruiter-detail-region {
+  min-width: 0;
+}
+
+@media (max-width: 767px) {
+  .recruiter-team-panel {
+    height: auto;
+    max-height: none;
+  }
+
+  .recruiter-list {
+    overflow-y: visible;
+  }
+}
+
+@keyframes card-arrive {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+.dashboard-overview .dashboard-metric-card,
+.dashboard-overview .job-health-card,
+.dashboard-overview .dashboard-renewal-card,
+.payments-dashboard .payment-metric-card,
+.payments-dashboard .payment-renewal-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  animation: card-arrive 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition:
+    border-color 200ms ease,
+    background-color 200ms ease,
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dashboard-overview .dashboard-metric-card:nth-child(2),
+.payments-dashboard .payment-metric-card:nth-child(2) {
+  animation-delay: 45ms;
+}
+
+.dashboard-overview .dashboard-metric-card:nth-child(3),
+.payments-dashboard .payment-metric-card:nth-child(3) {
+  animation-delay: 90ms;
+}
+
+.dashboard-overview .dashboard-metric-card:nth-child(4),
+.payments-dashboard .payment-metric-card:nth-child(4) {
+  animation-delay: 135ms;
+}
+
+.dashboard-overview .dashboard-metric-card::before,
+.payments-dashboard .payment-metric-card::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: #a94f32;
+  content: "";
+  transition: width 220ms ease;
+}
+
+.dashboard-overview .dashboard-metric-card {
+  border: 1px solid #dedbd2 !important;
+  border-radius: 0.7rem !important;
+  background: #fffefa !important;
+  padding: 1.25rem;
+}
+
+.app-shell--dark .dashboard-overview .dashboard-metric-card {
+  border-color: #3b3c36 !important;
+  background: #242521 !important;
+}
+
+.dashboard-overview .dashboard-metric-icon,
+.payments-dashboard .payment-metric-icon {
+  display: flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.55rem;
+  background: #f2e9e1;
+  color: #8f452d !important;
+  transition: color 220ms ease, background-color 220ms ease, transform 260ms ease;
+}
+
+.app-shell--dark .dashboard-overview .dashboard-metric-icon,
+.app-shell--dark .payments-dashboard .payment-metric-icon {
+  background: #3a2b25;
+  color: #e19a76 !important;
+}
+
+.dashboard-overview .dashboard-metric-card > div:first-child,
+.payments-dashboard .payment-metric-card > div:first-child {
+  align-items: flex-start;
+}
+
+.dashboard-overview .dashboard-metric-card h2,
+.payments-dashboard .payment-metric-card h2 {
+  max-width: calc(100% - 3.25rem);
+  padding-top: 0.15rem;
+  line-height: 1.5;
+}
+
+.dashboard-overview .dashboard-metric-card > p {
+  margin-top: 1.25rem;
+  font-size: clamp(1.55rem, 2.2vw, 2rem);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+
+.dashboard-overview .job-health-card {
+  border-color: #dedbd2 !important;
+  border-radius: 0.6rem !important;
+  background: #f8f6f0 !important;
+  padding: 1.15rem;
+}
+
+.app-shell--dark .dashboard-overview .job-health-card {
+  border-color: #3b3c36 !important;
+  background: #1d1e1b !important;
+}
+
+.dashboard-overview .job-health-card--attention {
+  border-color: #fecaca !important;
+  background: #fef2f2 !important;
+}
+
+.app-shell--dark .dashboard-overview .job-health-card--attention {
+  border-color: #7f3030 !important;
+  background: #321f1f !important;
+}
+
+.admin-summary-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  animation: card-arrive 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition:
+    border-color 200ms ease,
+    background-color 200ms ease,
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.admin-summary-card::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: #a94f32;
+  content: "";
+  transition: width 220ms ease;
+}
+
+.admin-summary-card:nth-child(2) {
+  animation-delay: 45ms;
+}
+
+.admin-summary-card:nth-child(3) {
+  animation-delay: 90ms;
+}
+
+.admin-summary-card:nth-child(4) {
+  animation-delay: 135ms;
+}
+
+.admin-summary-card:hover {
+  transform: translateY(-2px);
+}
+
+.admin-summary-card:hover::before {
+  width: 5px;
+}
+
+.dashboard-overview .job-health-icon {
+  display: grid;
+  width: 2.15rem;
+  height: 2.15rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 0.5rem;
+  background: #ebe7dd;
+}
+
+.app-shell--dark .dashboard-overview .job-health-icon {
+  background: #30312c;
+}
+
+.dashboard-overview .job-health-card > p:first-of-type {
+  margin-top: 1.1rem;
+  font-size: 2rem;
+  letter-spacing: -0.04em;
+}
+
+.dashboard-overview section[aria-labelledby="job-health-title"] > div:last-child {
+  margin-top: 1.15rem;
+}
+
+.dashboard-overview section[aria-labelledby="plans-ending-title"] ul {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: 0.75rem;
+}
+
+.app-shell--light .dashboard-overview section[aria-labelledby="plans-ending-title"] li,
+.app-shell--dark .dashboard-overview section[aria-labelledby="plans-ending-title"] li {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #dedbd2 !important;
+  border-radius: 0.65rem !important;
+  background: #fffefa !important;
+  padding: 1rem !important;
+  animation: card-arrive 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition: border-color 200ms ease, background-color 200ms ease, transform 260ms ease;
+}
+
+.app-shell--dark .dashboard-overview section[aria-labelledby="plans-ending-title"] li {
+  border-color: #3b3c36 !important;
+  background: #242521 !important;
+}
+
+.app-shell .dashboard-overview .plans-ending-avatar {
+  display: flex !important;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex: 0 0 2.25rem;
+  border-radius: 9999px !important;
+  background: #f2e9e1 !important;
+  color: #8f452d !important;
+}
+
+.app-shell--dark .dashboard-overview .plans-ending-avatar {
+  background: #3a2b25 !important;
+  color: #e19a76 !important;
+}
+
+.app-shell .dashboard-overview section[aria-labelledby="plans-ending-title"] li > div:first-of-type > span {
+  background: #eee9df !important;
+  color: #675f53 !important;
+}
+
+.app-shell--dark .dashboard-overview section[aria-labelledby="plans-ending-title"] li > div:first-of-type > span {
+  background: #37352e !important;
+  color: #d5c8ae !important;
+}
+
+.payments-dashboard .payment-metric-card {
+  border-color: #dedbd2 !important;
+  border-radius: 0.65rem !important;
+  background: #fffefa !important;
+  padding: 1.1rem;
+}
+
+.app-shell--dark .payments-dashboard .payment-metric-card {
+  border-color: #3b3c36 !important;
+  background: #242521 !important;
+}
+
+.payments-dashboard .payment-metric-card > p {
+  margin-top: 1rem;
+  font-size: clamp(1.25rem, 2vw, 1.7rem);
+  letter-spacing: -0.035em;
+}
+
+.payments-dashboard .payment-panel {
+  border-color: #dedbd2 !important;
+  border-radius: 0.7rem !important;
+  background: #fffefa !important;
+  transition: border-color 200ms ease, transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.app-shell--dark .payments-dashboard .payment-panel {
+  border-color: #3b3c36 !important;
+  background: #242521 !important;
+}
+
+.payments-dashboard .payment-panel[aria-label="Payments list"] {
+  overflow: hidden;
+}
+
+.payments-dashboard .payment-panel tbody tr {
+  transition: background-color 160ms ease;
+}
+
+.payments-dashboard .payment-renewal-card {
+  border-color: #dedbd2 !important;
+  border-radius: 0.6rem !important;
+  background: #f8f6f0 !important;
+  padding: 1rem !important;
+}
+
+.app-shell--dark .payments-dashboard .payment-renewal-card {
+  border-color: #3b3c36 !important;
+  background: #1d1e1b !important;
+}
+
+.payments-dashboard .payment-renewal-card > div > div:first-child {
+  border-radius: 0.45rem;
+  background: #eee9df !important;
+  color: #514b40 !important;
+}
+
+.app-shell--dark .payments-dashboard .payment-renewal-card > div > div:first-child {
+  background: #37352e !important;
+  color: #e5dece !important;
+}
+
+.payments-dashboard .payment-renewal-card [class*="bg-violet-"],
+.payments-dashboard .payment-renewal-card [class*="bg-sky-"],
+.payments-dashboard .payment-renewal-card [class*="bg-indigo-"] {
+  background: #f2e9e1 !important;
+  color: #8f452d !important;
+}
+
+.app-shell--dark .payments-dashboard .payment-renewal-card [class*="bg-violet-"],
+.app-shell--dark .payments-dashboard .payment-renewal-card [class*="bg-sky-"],
+.app-shell--dark .payments-dashboard .payment-renewal-card [class*="bg-indigo-"] {
+  background: #3a2b25 !important;
+  color: #e19a76 !important;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .dashboard-overview .dashboard-metric-card:hover,
+  .dashboard-overview .job-health-card:hover,
+  .dashboard-overview section[aria-labelledby="plans-ending-title"] li:hover,
+  .payments-dashboard .payment-metric-card:hover,
+  .payments-dashboard .payment-renewal-card:hover {
+    border-color: #b9a999 !important;
+    transform: translateY(-3px);
+  }
+
+  .app-shell--dark .dashboard-overview .dashboard-metric-card:hover,
+  .app-shell--dark .dashboard-overview .job-health-card:hover,
+  .app-shell--dark .dashboard-overview section[aria-labelledby="plans-ending-title"] li:hover,
+  .app-shell--dark .payments-dashboard .payment-metric-card:hover,
+  .app-shell--dark .payments-dashboard .payment-renewal-card:hover {
+    border-color: #776451 !important;
+  }
+
+  .dashboard-overview .dashboard-metric-card:hover::before,
+  .payments-dashboard .payment-metric-card:hover::before {
+    width: 5px;
+  }
+
+  .dashboard-overview .dashboard-metric-card:hover .dashboard-metric-icon,
+  .payments-dashboard .payment-metric-card:hover .payment-metric-icon {
+    background: #a94f32;
+    color: #fffefa !important;
+    transform: rotate(-5deg) scale(1.04);
+  }
+
+  .app-shell--dark .dashboard-overview .dashboard-metric-card:hover .dashboard-metric-icon,
+  .app-shell--dark .payments-dashboard .payment-metric-card:hover .payment-metric-icon {
+    background: #d27a55;
+    color: #191a17 !important;
+  }
+
+  .payments-dashboard .payment-panel:hover {
+    border-color: #c8bdae !important;
+  }
+
+  .app-shell--dark .payments-dashboard .payment-panel:hover {
+    border-color: #5d594e !important;
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .dashboard-overview > section[class*="rounded-"][class*="border"]:hover,
+  .dashboard-overview > div > section[class*="rounded-"][class*="border"]:hover {
+    transform: translateY(-2px);
+  }
+
+  .dashboard-overview section[aria-label="Platform summary"] article:hover {
+    border-radius: 0.7rem;
+    background-color: #eee9df;
+    transform: translateY(-2px);
+  }
+
+  .app-shell--dark .dashboard-overview section[aria-label="Platform summary"] article:hover {
+    background-color: #30312c;
+  }
+
+  .dashboard-overview article[class*="rounded-"][class*="border"]:hover {
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell *,
+  .login-page *,
+  .recruiter-dashboard * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
