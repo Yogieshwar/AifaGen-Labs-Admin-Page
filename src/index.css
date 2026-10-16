@@ -648,7 +648,12 @@ body {
   .app-shell .app-sidebar:hover .app-sidebar-signout,
   .app-shell .app-sidebar:focus-within .app-sidebar-signout {
     justify-content: flex-start;
-    gap: 0.5rem;
+    gap: 0.25rem;
+  }
+
+  .app-shell .app-sidebar:hover .app-sidebar-signout .app-sidebar-label,
+  .app-shell .app-sidebar:focus-within .app-sidebar-signout .app-sidebar-label {
+    width: auto;
   }
 }
 

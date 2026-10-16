@@ -47,6 +47,8 @@ function AifaAssistant({ isDark }) {
   const [messages, setMessages] = useState([])
   const [inputValue, setInputValue] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
+  const [isRequestingMicrophone, setIsRequestingMicrophone] = useState(false)
+  const [microphoneMessage, setMicrophoneMessage] = useState('')
   const [voiceEnabled, setVoiceEnabled] = useState(false)
   const [welcomeShown, setWelcomeShown] = useState(false)
   const [showSuggestedQuestions, setShowSuggestedQuestions] = useState(true)
@@ -162,6 +164,31 @@ function AifaAssistant({ isDark }) {
       setInputValue('')
       setIsProcessing(false)
     }, 120)
+  }
+
+  const handleMicrophonePermission = async () => {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setMicrophoneMessage('Microphone access is not available in this browser or context.')
+      return
+    }
+
+    setMicrophoneMessage('')
+    setIsRequestingMicrophone(true)
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      stream.getTracks().forEach((track) => track.stop())
+      setMicrophoneMessage('Microphone permission granted.')
+    } catch (error) {
+      if (error?.name === 'NotAllowedError' || error?.name === 'PermissionDeniedError') {
+        setMicrophoneMessage('Microphone permission was denied. Allow access in your browser settings to continue.')
+      } else if (error?.name === 'NotFoundError' || error?.name === 'DevicesNotFoundError') {
+        setMicrophoneMessage('No microphone was found.')
+      } else {
+        setMicrophoneMessage(error?.message || 'Could not access the microphone.')
+      }
+    } finally {
+      setIsRequestingMicrophone(false)
+    }
   }
 
   const handleKeyDown = (event) => {
@@ -338,6 +365,19 @@ function AifaAssistant({ isDark }) {
                 value={inputValue}
               />
               <button
+                aria-label="Request microphone permission"
+                className={`inline-flex size-10 shrink-0 items-center justify-center rounded-xl border transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${isDark ? 'border-[#2a3961] bg-[#0f172a] text-slate-200 hover:bg-[#162642]' : 'border-[#dfe7f5] bg-white text-slate-600 hover:bg-slate-50'}`}
+                disabled={isRequestingMicrophone}
+                onClick={handleMicrophonePermission}
+                title="Request microphone permission"
+                type="button"
+              >
+                <svg aria-hidden="true" className="size-5" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 24 24">
+                  <rect x="9" y="2" width="6" height="12" rx="3" />
+                  <path d="M5 10a7 7 0 0 0 14 0M12 17v5m-4 0h8" />
+                </svg>
+              </button>
+              <button
                 className={`inline-flex items-center justify-center rounded-xl px-3 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60 ${isDark ? 'bg-[#4f46e5]' : 'bg-[#2563eb]'}`}
                 disabled={isProcessing || !inputValue.trim()}
                 type="submit"
@@ -345,6 +385,11 @@ function AifaAssistant({ isDark }) {
                 Send
               </button>
             </div>
+            {microphoneMessage && (
+              <p aria-live="polite" className={`mt-2 text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                {microphoneMessage}
+              </p>
+            )}
           </form>
         </section>
       )}

@@ -86,6 +86,10 @@ function Icon({ name, className = 'size-4' }) {
     close: <path d="m18 6-12 12M6 6l12 12" />,
     calendar: <><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M16 3v4M8 3v4M3 11h18" /></>,
     users: <><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="10" cy="7" r="4" /><path d="M20 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></>,
+    check: <><path d="m5 12 4 4L19 6" /><circle cx="12" cy="12" r="9" /></>,
+    pause: <><circle cx="12" cy="12" r="9" /><path d="M10 9v6M14 9v6" /></>,
+    alert: <><path d="M10.3 3.9 2.6 17.3A2 2 0 0 0 4.3 20h15.4a2 2 0 0 0 1.7-2.7L13.7 3.9a2 2 0 0 0-3.4 0Z" /><path d="M12 9v4M12 16h.01" /></>,
+    cancel: <><circle cx="12" cy="12" r="9" /><path d="m9 9 6 6m0-6-6 6" /></>,
     file: <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" /><path d="M14 2v6h6M8 13h8M8 17h8" /></>,
     briefcase: <><rect x="3" y="7" width="18" height="14" rx="2" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18M10 12v2h4v-2" /></>,
     bookmark: <path d="M6 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18l-6-4-6 4Z" />,
@@ -473,38 +477,43 @@ function Users({ users, onUsersChange, onPlanChange, onProfileEdit, isDark }) {
         </button>
       </header>
 
-      <section aria-label="Users overview" className={`mb-5 overflow-hidden rounded-xl border ${t.panel}`}>
-        <div aria-hidden="true" className="flex h-1.5 w-full">
-          {statuses.map((s) => counts[s] > 0 && <span className={STATUS_DOT[s]} key={s} style={{ width: `${(counts[s] / total) * 100}%` }} title={`${s}: ${counts[s]}`} />)}
-        </div>
-        <div className={`grid grid-cols-2 gap-px lg:grid-cols-5 ${t.gap}`}>
-          <button
-            aria-pressed={statusFilter === 'All statuses'}
-            className={`col-span-2 p-4 text-left transition-colors md:p-5 lg:col-span-1 ${t.cell} ${cellFocus}`}
-            onClick={() => { setStatusFilter('All statuses'); setPage(1) }}
-            type="button"
-          >
-            <span className={`block text-xs font-medium ${t.muted}`}>Total users</span>
-            <span className={`mt-2 block text-[28px] leading-9 font-bold tabular-nums ${t.head}`}>{total.toLocaleString('en-IN')}</span>
-            <span className={`mt-0.5 block text-xs ${t.muted}`}>All accounts</span>
-          </button>
-          {statuses.map((s) => (
+      <section aria-label="Users overview" className="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        {[
+          { label: 'Total users', value: total, caption: 'All accounts', icon: 'users', status: 'All statuses', tone: 'text-sky-600 bg-sky-500/10' },
+          { label: 'Active', value: counts.Active, caption: `${pct(counts.Active)}% of users`, icon: 'check', status: 'Active', tone: 'text-emerald-600 bg-emerald-500/10' },
+          { label: 'Inactive', value: counts.Inactive, caption: `${pct(counts.Inactive)}% of users`, icon: 'pause', status: 'Inactive', tone: 'text-slate-500 bg-slate-500/10' },
+          { label: 'Past due', value: counts['Past due'], caption: `${pct(counts['Past due'])}% of users`, icon: 'alert', status: 'Past due', tone: 'text-amber-600 bg-amber-500/10' },
+          { label: 'Cancelled', value: counts.Cancelled, caption: `${pct(counts.Cancelled)}% of users`, icon: 'cancel', status: 'Cancelled', tone: 'text-rose-600 bg-rose-500/10' },
+        ].map((card) => {
+          const selected = statusFilter === card.status
+          return (
             <button
-              aria-pressed={statusFilter === s}
-              className={`p-4 text-left transition-colors md:p-5 ${t.cell} ${cellFocus} ${statusFilter === s ? (isDark ? 'ring-2 ring-inset ring-sky-400' : 'ring-2 ring-inset ring-slate-900') : ''}`}
-              key={s}
-              onClick={() => pickStatus(s)}
+              aria-pressed={selected}
+              className={`group rounded-xl border p-4 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md md:p-5 ${t.panel} ${t.cell} ${cellFocus} ${selected ? (isDark ? 'border-sky-400/50 shadow-md' : 'border-sky-300 shadow-md') : ''}`}
+              key={card.status}
+              onClick={() => {
+                if (card.status === 'All statuses') {
+                  setStatusFilter('All statuses')
+                  setPage(1)
+                } else {
+                  pickStatus(card.status)
+                }
+              }}
               type="button"
             >
-              <span className={`flex items-center gap-2 text-xs font-medium ${t.muted}`}>
-                <span aria-hidden="true" className={`size-2 rounded-full ${STATUS_DOT[s]}`} />
-                {s}
+              <span className="flex items-start justify-between gap-3">
+                <span className={`text-xs font-medium ${t.muted}`}>{card.label}</span>
+                <span className={`flex size-9 shrink-0 items-center justify-center rounded-lg transition-transform duration-200 group-hover:scale-110 ${card.tone}`}>
+                  <Icon className="size-[18px]" name={card.icon} />
+                </span>
               </span>
-              <span className={`mt-2 block text-[28px] leading-9 font-bold tabular-nums ${t.head}`}>{counts[s].toLocaleString('en-IN')}</span>
-              <span className={`mt-0.5 block text-xs tabular-nums ${t.muted}`}>{pct(counts[s])}% of users</span>
+              <span className={`mt-2 block text-[28px] leading-9 font-bold tracking-tight tabular-nums ${t.head}`}>
+                {card.value.toLocaleString('en-IN')}
+              </span>
+              <span className={`mt-1 block text-xs ${t.muted}`}>{card.caption}</span>
             </button>
-          ))}
-        </div>
+          )
+        })}
       </section>
 
       <section aria-label="Users list" className={`overflow-hidden rounded-xl border ${t.panel}`}>
@@ -545,7 +554,7 @@ function Users({ users, onUsersChange, onPlanChange, onProfileEdit, isDark }) {
                 <SortHeader align="center" label="AI use (30d)" onSort={toggleSort} sort={sort} sortKey="ai" t={t} />
                 <th className="px-4 py-3 font-semibold" scope="col">Plan ends</th>
                 <SortHeader label="Joined" onSort={toggleSort} sort={sort} sortKey="joined" t={t} />
-                <th className="px-4 py-3 font-semibold" scope="col"><span className="sr-only">Actions</span></th>
+                <th className="px-4 py-3 font-semibold" scope="col">Actions</th>
               </tr>
             </thead>
             <tbody className={`divide-y ${t.divide}`}>

@@ -109,24 +109,61 @@ const paymentMethodStyles = {
   },
 }
 
+const paymentLogoPaths = {
+  upi: '/paymentlogs/UPI-Color.png',
+  rupay: '/paymentlogs/rupay.png',
+  visa: '/paymentlogs/visa-logo-png-2013.png',
+
+  mastercard: '/paymentlogs/mastercard-26149.png',
+
+  amex: '/paymentlogs/american-express-logo-transparent.png',
+};
+
 function PayIcon({ name }) {
-  const icon = paymentIcons[name] || paymentIcons.card
+  const logo = paymentLogoPaths[name];
+
+  if (!logo) {
+    return (
+      <span
+        className="inline-flex size-8 shrink-0 items-center justify-center rounded-md text-xs font-semibold"
+        aria-label="Other payment method"
+      >
+        PAY
+      </span>
+    );
+  }
 
   return (
-    <svg
-      aria-hidden="true"
-      className="size-4 shrink-0"
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.8"
-      viewBox="0 0 24 24"
-    >
-      {icon}
-    </svg>
-  )
+    <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-md bg-white p-1">
+      <img
+        src={logo}
+        alt={`${name} logo`}
+        className="max-h-full max-w-full object-contain"
+        loading="lazy"
+      />
+    </span>
+  );
 }
+
+
+// function PayIcon({ name }) {
+//   const icon = paymentIcons[name] || paymentIcons.card
+
+//   return (
+//     <svg
+//       aria-hidden="true"
+//       className="size-4 shrink-0"
+//       fill="none"
+//       stroke="currentColor"
+//       strokeLinecap="round"
+//       strokeLinejoin="round"
+//       strokeWidth="1.8"
+//       viewBox="0 0 24 24"
+//     >
+//       {icon}
+//     </svg>
+//   )
+// }
 
 function getPaymentIcon(method = '') {
   const value = String(method).toLowerCase().trim()
